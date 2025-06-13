@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>StarTrade - Shop</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .price {
+      font-weight: bold;
+      color: #fff;
+      font-size: 1.1em;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="background-shapes">
+    <div class="shape shape1"></div>
+    <div class="shape shape2"></div>
+    <div class="shape shape3"></div>
+    <div class="shape shape4"></div>
+  </div>
+
+  <header>
+    <h1 class="site-title">StarTrade</h1>
+    <div class="nav-left">
+      <a href="#" class="nav-link active">Shop</a>
+      <a href="https://discord.gg/UwaS7AhYn2" target="_blank" class="nav-link">Contact</a>
+    </div>
+    <div class="nav-right" id="cart-btn" title="Voir le panier" style="position: relative; cursor: pointer;">
+      🛒 <span id="cart-count">0</span>
+      <ul id="cart-items" style="
+        display: none;
+        position: absolute;
+        top: 40px;
+        right: 0;
+        background: #2f2762;
+        padding: 10px;
+        border-radius: 10px;
+        max-width: 220px;
+        max-height: 250px;
+        overflow-y: auto;
+        list-style: none;
+        color: #d1c3f0;
+        box-shadow: 0 0 15px #7c3aed;
+        z-index: 1000;
+      "></ul>
+    </div>
+  </header>
+
+  <main>
+    <section class="stats-container">
+      <div class="stat">
+        <h3>Products Sold</h3>
+        <p>26</p>
+      </div>
+      <div class="stat">
+        <h3>Total Customers</h3>
+        <p>26</p>
+      </div>
+      <div class="stat">
+        <h3>Reviews Received</h3>
+        <p>23</p>
+      </div>
+      <div class="stat">
+        <h3>Average Rating</h3>
+        <p>4.7 / 5 ⭐</p>
+      </div>
+    </section>
+
+    <section class="products">
+      <div class="product">
+        <img src="image1.png" alt="Brawl Star Rare" />
+        <h3>Brawl Star Rare</h3>
+        <p class="price">25.00 €</p>
+        <button>Ajouter au panier</button>
+      </div>
+
+      <div class="product">
+        <img src="image2.png" alt="Bot Auto Farm BR" />
+        <h3>Bot Auto Farm BR</h3>
+        <p class="price">15.00 €</p>
+        <button>Ajouter au panier</button>
+      </div>
+
+      <div class="product">
+        <img src="image3.png" alt="Boosting Brawl Star" />
+        <h3>Boosting Brawl Star</h3>
+        <p class="price">5.00 €</p>
+        <button>Ajouter au panier</button>
+      </div>
+
+      <div class="product">
+        <img src="image4.png" alt="Pub Serveur" />
+        <h3>Pub Serveur</h3>
+        <p class="price">10.00 €</p>
+        <button>Ajouter au panier</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const cartBtn = document.getElementById("cart-btn");
+    const cartItemsList = document.getElementById("cart-items");
+    const cartCount = document.getElementById("cart-count");
+    let cart = [];
+
+    cartBtn.addEventListener("click", () => {
+      cartItemsList.style.display = cartItemsList.style.display === "block" ? "none" : "block";
+      updateCartDisplay();
+    });
+
+    function addToCart(productName, productPrice) {
+      cart.push({ name: productName, price: productPrice });
+      cartCount.textContent = cart.length;
+      updateCartDisplay();
+    }
+
+    function updateCartDisplay() {
+      cartItemsList.innerHTML = "";
+      if (cart.length === 0) {
+        cartItemsList.innerHTML = "<li>Panier vide</li>";
+        return;
+      }
+      let total = 0;
+      cart.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = `${item.name} - ${item.price.toFixed(2)} €`;
+        cartItemsList.appendChild(li);
+        total += item.price;
+      });
+      const totalDiv = document.createElement("div");
+      totalDiv.textContent = `Total: ${total.toFixed(2)} €`;
+      totalDiv.style.marginTop = "10px";
+      cartItemsList.appendChild(totalDiv);
+
+      const payBtn = document.createElement("button");
+      payBtn.textContent = "Payer";
+      payBtn.style.marginTop = "5px";
+      payBtn.onclick = () => {
+        window.open("https://discord.gg/RJC3sFKVkn", "_blank");
+      };
+      cartItemsList.appendChild(payBtn);
+    }
+
+    document.querySelectorAll(".product button").forEach(button => {
+      button.addEventListener("click", () => {
+        const product = button.closest(".product");
+        const name = product.querySelector("h3").textContent;
+        const priceText = product.querySelector(".price").textContent;
+        // On enlève " €" pour convertir en float
+        const price = parseFloat(priceText.replace(" €", ""));
+        addToCart(name, price);
+      });
+    });
+  </script>
+</body>
+</html>
+

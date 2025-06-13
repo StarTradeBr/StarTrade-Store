@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>StarTrade - Shop</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <header>
+        <h1>StarTrade</h1>
+        <nav>
+            <a href="index.html">Accueil</a>
+            <a href="shop.html">Shop</a>
+        </nav>
+        <!-- Panier icône -->
+        <div id="cart-icon" title="Voir le panier">
+            🛒 <span id="cart-count">0</span>
+        </div>
+    </header>
+
+    <main>
+        <h2>Nos Produits</h2>
+
+        <div class="products">
+            <div class="product" data-id="1" data-name="Compte Brawl Stars Rare" data-price="50">
+                <h3>Compte Brawl Stars Rare</h3>
+                <p>Un compte unique avec plusieurs personnages rares et skins exclusifs.</p>
+                <p class="price">50,00 €</p>
+                <button class="btn-add-to-cart">Ajouter au panier</button>
+            </div>
+
+            <div class="product" data-id="2" data-name="Bot Auto Farm Brawl Royale" data-price="80">
+                <h3>Bot Auto Farm Brawl Royale</h3>
+                <p>Automatise le farming et optimise ta progression dans Brawl Royale.</p>
+                <p class="price">80,00 €</p>
+                <button class="btn-add-to-cart">Ajouter au panier</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal panier -->
+    <div id="cart-modal" class="hidden">
+        <div id="cart-content">
+            <h3>Votre Panier</h3>
+            <ul id="cart-items"></ul>
+            <p id="cart-total"></p>
+            <button id="checkout-btn">Passer à la commande</button>
+            <button id="close-cart">Fermer</button>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2025 StarTrade - Tous droits réservés
+    </footer>
+
+    <script>
+        // Gestion du panier simple
+        const cartIcon = document.getElementById('cart-icon');
+        const cartCount = document.getElementById('cart-count');
+        const cartModal = document.getElementById('cart-modal');
+        const cartItemsElem = document.getElementById('cart-items');
+        const cartTotalElem = document.getElementById('cart-total');
+        const checkoutBtn = document.getElementById('checkout-btn');
+        const closeCartBtn = document.getElementById('close-cart');
+
+        let cart = {};
+
+        // Met à jour l'affichage du nombre d'articles dans le panier
+        function updateCartCount() {
+            const totalItems = Object.values(cart).reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = totalItems;
+            cartIcon.style.display = totalItems > 0 ? 'inline-block' : 'none';
+        }
+
+        // Met à jour la liste des articles dans le modal panier
+        function updateCartModal() {
+            cartItemsElem.innerHTML = '';
+            let totalPrice = 0;
+            for (const id in cart) {
+                const item = cart[id];
+                totalPrice += item.price * item.quantity;
+                const li = document.createElement('li');
+                li.textContent = `${item.name} x${item.quantity} — ${ (item.price * item.quantity).toFixed(2) } €`;
+                cartItemsElem.appendChild(li);
+            }
+            cartTotalElem.textContent = `Total : ${totalPrice.toFixed(2)} €`;
+        }
+
+        // Ouvre la fenêtre panier
+        function openCart() {
+            updateCartModal();
+            cartModal.classList.remove('hidden');
+        }
+
+        // Ferme la fenêtre panier
+        function closeCart() {
+            cartModal.classList.add('hidden');
+        }
+
+        // Ajoute un produit au panier
+        function addToCart(id, name, price) {
+            if (cart[id]) {
+                cart[id].quantity++;
+            } else {
+                cart[id] = {name, price, quantity: 1};
+            }
+            updateCartCount();
+        }
+
+        // Au clic sur "Ajouter au panier"
+        document.querySelectorAll('.btn-add-to-cart').forEach(button => {
+            button.addEventListener('click', e => {
+                const productElem = e.target.closest('.product');
+                const id = productElem.dataset.id;
+                const name = productElem.dataset.name;
+                const price = parseFloat(productElem.dataset.price);
+                addToCart(id, name, price);
+            });
+        });
+
+        // Au clic sur l'icône panier
+        cartIcon.addEventListener('click', openCart);
+
+        // Fermer le panier
+        closeCartBtn.addEventListener('click', closeCart);
+
+        // Checkout redirige vers Discord
+        checkoutBtn.addEventListener('click', () => {
+            if (Object.keys(cart).length === 0) {
+                alert('Votre panier est vide !');
+                return;
+            }
+            // Remplace ici par ton lien Discord
+            const discordLink = 'https://discord.gg/tonlieninvitation';
+            window.open(discordLink, '_blank');
+        });
+
+        // Au chargement, on cache l'icône panier si vide
+        updateCartCount();
+    </script>
+</body>
+</html>
